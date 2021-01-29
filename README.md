@@ -1,7 +1,7 @@
 # weblogic_hpcmd
 weblogic t3 deserialization rce, support replying message from rmi sever. The original project fork from: [weblogic_cmd](https://github.com/5up3rc/weblogic_cmd), intend to keep updating
 
-1. 利用文章见：
+1. 利用文章见：[Weblogic T3 反序列化回显利用(CVE-2020-2555)](https://hpdoger.cn/2021/01/28/title:%20Weblogic%20T3%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9B%9E%E6%98%BE%E5%88%A9%E7%94%A8(CVE-2020-2555)/)
 2. 直接通过加载字节码的方式来加载class，执行无文件生成。通过绑定rmi来实现回显。
 3. 支持t3s
 4. 原版本利用链为CVE-2015-4852
